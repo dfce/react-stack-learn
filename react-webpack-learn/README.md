@@ -178,4 +178,62 @@ module.exports = {
 ```
 *   保存后重新运行 npm run dev 打开 http://localhost:8080 这时候，修改 app/component.js 中的内容。保存后，浏览器就会自动刷新，并且显示修改后的结果了。至此，webpack 工作流完成。
 
+## 安装与配置Babel
 
+##   简介
+
+*   Babel 是一个通用的多用途 JavaScript 编译器。
+#    拆分成几个核心包，babel-core, babel-node, babel-cli...
+#    没有了默认的转换，现在你需要手动的添加 plugin。也就是插件化
+#    添加了 preset，也就是预置条件。
+#    增加了 .babelrc 文件，方便自定义的配置。
+
+#   Babel 能做什么？
+*   Babel 通过语法转换来支持最新版本的 JavaScript （ES6），而不用等待浏览器的支持。
+*   Babel 可以转换 React 的 JSX 语法和删除类型注释。
+*   Babel 是由插件构建的。因此，你可以根据自己的需要订制。
+*   支持 source map ，所以您可以轻松调试您编译的代码。
+
+#   Babel 不能做什么？
+*   Babel 只转换语法（如箭头函数），不支持新的全局变量。但是，您可以使用 babel-polyfill 来辅助支持。
+
+##  包
+*   babel-core
+*   babel-cli
+*   babel-external-helpers
+*   babel-node
+*   babel-register
+*   babel-runtime
+*   babel-polyfill
+
+#   babel-core :babel 的核心包，包括核心 api，比如 transform，主要是处理转码的。 它会把我们的 js 代码，抽象成 ast，即 abstract syntax tree 的缩写，是源代码的抽象语法结构的树状表现形式。
+*   主要API:
+```
+var babel = require('babel-core');
+var transform = babel.transform;
+// babel.transform(code: string, options?: Object)
+transform("code", options) // => { code, map, ast }
+// babel.transformFile(filename: string, options?: Object, callback: Function)
+var path = require('path');
+var result = babel.transformFileSync(
+    path.resolve(__dirname, './test.js'),
+    {
+        presets: ['env'],
+        plugins: ['transform-runtime'],
+    },
+    function(err, result) {// { code, map, ast }
+        console.log(result);
+    });
+// babel.transformFileSync(filename: string, options?: Object)
+var result = babel.transformFileSync(
+    path.resolve(__dirname, './test.js'),
+    {
+        presets: ['env'],
+        plugins: ['transform-runtime'],
+    }
+);
+// babel.transformFromAst(ast: Object, code?: string, options?: Object)
+// 把 ast 传入，解析为 code 代码
+```
+
+#   babel-cli   提供命令行运行 babel

@@ -16,19 +16,18 @@
 
 #   Windows : 推荐使用git for windows，它包括了图形工具以及命令行模拟器。
 
-## 用ssh-keygen命令生成一组新的id_rsa_new和id_rsa_new.pub
-#   ssh-keygen -t rsa -C "new email"
 
 ## 配置Git
 #   设置用户名、邮箱
 *   $ git config --global user.name "My Name"
-*   $ git config --global user.email myEmail@example.com
-
+*   $ git config --global user.email "dengfei@flygame.cn"
 #   查看已有的配置信息： $ git config --list
 #   查看用户名和邮箱地址：
 *   $ git config user.name
 *   $ git config user.email
 
+## 用ssh-keygen命令生成一组新的id_rsa_new和id_rsa_new.pub
+#   ssh-keygen -t rsa -C "dengfei@flygame.cn"
 
 ## 创建新仓库：$ git init
 #    git 会把所有文件以及历史记录保存在你的项目中，创建一个新的仓库，首先要去到项目路径，执行 git init。然后git会创建一个隐藏的文件夹#    .git，所有的信息都储存在其中。如果你没有看到.git目录，那是因为这个目录默认是隐藏的，用ls -ah命令就可以看见

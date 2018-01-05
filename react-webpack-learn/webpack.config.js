@@ -30,7 +30,7 @@ module.exports = {
             inject   : 'body'
         }),
         new webpack.BannerPlugin('版权所有，翻版必究'),   // 版权声明插件
-        new webpack.optimize.OccurrenceOrderPlugin({minimize: true}),   // 为组件分配ID，通过这个插件webpack可以分析和优先考虑使用最多的模块，并为它们分配最小的ID
+        new webpack.optimize.OccurrenceOrderPlugin(),   // 为组件分配ID，通过这个插件webpack可以分析和优先考虑使用最多的模块，并为它们分配最小的ID
         new webpack.optimize.UglifyJsPlugin(),          // 压缩JS代码；
         new ExtractTextPlugin("style.css")              // 分离CSS和JS文件
     ],

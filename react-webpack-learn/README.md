@@ -120,6 +120,22 @@ module.exports = {
 ```
 
 *   现在输入 npm run build 就可以编译了。至此，第一步 webpack 环境搭建完成。
+##  html-webpack-plugin 参数说明
+*   title           :   title值用于生成的HTML文档。
+*   filename        :   将生成的HTML写入到该文件中。默认写入到index.html中。你也可以在这儿指定子目录 (eg: assets/admin.html)。
+*   template        :   Webpack require path 到 template中。
+*   inject          :   ture | 'head' | 'body' | false 添加所有的静态资源（assets）到模板文件或templateContent.当传入true或'body'时，所有javascript资源将被放置到body 元素的底部。
+                        当传入'head'时， 所有的脚本将被放置到head元素中。
+*   favicon         :   添加指定的favicon path 到输出的html文件。
+
+*   minify          ：  {...} | false 传入一个html-minifier 对象选项来压缩输出的html文件。 
+*   hash            :   true | false 如果值为true，就添加一个唯一的webpack compilation hash给所有已included的 scripts 和 CSS 文件。这对缓存清除（cache busting）十分有用。
+*   cache           :   true | false 如果为true (默认)，只要文件被更改了就emit(发表)文件。  
+*   showErrors      :   true | false如果为true (默认)，详细的错误信息将被写入到HTML页面。 
+*   chunksSortMode  :   在chunks被include到html文件中以前，允许你控制chunks 应当如何被排序。允许的值: 'none' | 'auto' | 'dependency' | {function} - 默认值: 'auto'。 
+*   encludeChunks   :   允许你跳过某些chunks (e.g. don't add the unit-test chunk)
+*   xhtml           :   true | false 如果为true， 将 link 标签渲染为自闭合标签, XHTML compliant。 默认是 false。    
+
 
 
 
@@ -137,7 +153,7 @@ npm install webpack-dev-server --save-dev
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",  // test 可以删除
         "build": "webpack --progress --colors --config webpack.config.js",
-        "dev": "webpack-dev-server --devtool eval --progress --colors --hot --content-base build"
+        "dev": "webpack-dev-server --devtool eval --progress --colors --hot --content-base build" // --open 选项是否直接打开
     },
     ...
 }
@@ -169,6 +185,7 @@ module.exports = {
     },
     plugins:[   // 定义插件，一个数组
         new HtmlWebpackPlugin()
+        new webpack.BannerPlugin('版权所有，翻版必究')   // 版权声明插件
     ],
     resolve:{},     //影响对模块的解析，一个对象
     module:{},      //定义对模块的处理逻辑，一个对象
@@ -415,3 +432,179 @@ var obj = {};
 
 *   具体项目还是需要使用 babel-polyfill 配合 useBuiltIns，只使用 babel-runtime 的话，实例方法不能正常工作（例如 "foobar".includes("foo")）；
     JavaScript 库和工具可以使用 babel-runtime 配合 babel-plugin-transform-runtime，在实际项目中使用这些库和工具，需要该项目本身提供 polyfill；
+
+
+
+##  WebPack 其他高级功能【比如下面的：loaders 和 plugins】  
+#   这些功能其实都可以通过命令行模式实现，但是正如前面提到的，这样不太方便且容易出错的，更好的办法是定义一个配置文件，这个配置文件其实也是一个简单的JavaScript模块，
+#   我们可以把所有的与打包相关的信息放在里面。
+
+
+##  WebPack 的一下强大功能
+##   生成 Source Maps (使调试更容易)
+*   开发时总是离不开调试方便的调试能极大的提高开发效率，不过有时候通过打包后的文件，你是不容易找到出错了的地方，对应的你写的代码的位置的，Source Maps就是来帮我们解决这个问题的。
+*   通过简单的配置，webpack就可以在打包时为我们生成的source maps，这为我们提供了一种对应编译文件和源文件的方法，使得编译后的代码可读性更高，也更容易调试。
+*   在webpack的配置文件中配置source maps，需要配置devtool，它有以下四种不同的配置选项，各具优缺点，描述如下：
+*   devtool选项	                                                配置结果
+*   source-map	                    在一个单独的文件中产生一个完整且功能完全的文件。这个文件具有最好的source map，但是它会减慢打包速度；
+*   cheap-module-source-map	        在一个单独的文件中生成一个不带列映射的map，不带列映射提高了打包速度，但是也使得浏览器开发者工具只能对应到具体的行，不能对应到具体的列（符号），会对调试造成不便；
+*   eval-source-map	                使用eval打包源文件模块，在同一个文件中生成干净的完整的source map。这个选项可以在不影响构建速度的前提下生成完整的sourcemap，但是对打包后输出的JS文件的执行具有
+*                                   性能和安全的隐患。在开发阶段这是一个非常好的选项，在生产阶段则一定不要启用这个选项；
+*   cheap-module-eval-source-map	这是在打包文件时最快的生成source map的方法，生成的Source Map 会和打包后的JavaScript文件同行显示，没有列映射，和eval-source-map选项具有相似的缺点；
+
+#   *正如上所述：上述选项从上到下打包速度越来越快，不过同时也潜藏越多的负面作用，较快的打包速度的后果就是对打包后的文件的的执行有一定影响。对小到中型的项目中，eval-source-map是一个很好的选项，
+#    再次强调你只应该开发阶段使用它，我们继续对上文新建的webpack.config.js，进行如下配置:
+```
+module.exports = {
+    devtool : 'eval-source-map',                    // 打包选项：source maps
+    entry: path.resolve(__dirname, 'app/main.js'),  // 打包的入口文件
+    output: {                                       // 配置打包的结果，一个对象
+        path: path.resolve(__dirname, 'build'),     // 定义输出文件路径，一个字符串
+        filename: 'bundle.js',                      // 定义输出文件名，一个字符串
+    },
+}
+```
+*   cheap-module-eval-source-map方法构建速度更快，但是不利于调试，推荐在大型项目考虑时间成本时使用。
+
+##  Loaders 
+#   Loaders是webpack提供的最激动人心的功能之一了。通过使用不同的loader，webpack有能力调用外部的脚本或工具，实现对不同格式的文件的处理，比如说分析转换scss为css，或者把下一代的JS文件（ES6，ES7)
+#   转换为现代浏览器兼容的JS文件，对React的开发而言，合适的Loaders可以把React的中用到的JSX文件转换为JS文件。
+
+#   Loaders需要单独安装并且需要在webpack.config.js中的modules关键字下进行配置，Loaders的配置包括以下几方面：
+*   test    :   用以匹配loaders所处理文件的扩展名的正则表达式【必须】
+*   loader  :   loader的名称【必须】
+*   include/exculde :   手动添加必须处理的文件（文件夹）或屏蔽不需要处理的文件（文件夹）【可选】
+*   query   :   为loader提供额外的设置选项【可选】
+
+
+##  一切皆模块
+#   Webpack有一个不可不说的优点，它把所有的文件都都当做模块处理，JavaScript代码，CSS和fonts以及图片等等通过合适的loader都可以被处理。
+
+##  CSS
+
+#   webpack提供两个工具处理样式表，css-loader 和 style-loader，二者处理的任务不同，css-loader使你能够使用类似@import 和 url(...)的方法实现 require()的功能,style-loader将所有的计算后的样式加入页面中，二者组合在一起使你能够把样式表嵌入webpack打包后的JS文件中。
+*   安装
+```
+npm install --save-dev style-loader css-loader
+```
+*   使用 ；注意这里对同一个文件引入多个loader的方法.通常情况下，css会和js打包到同一个文件中，并不会打包为一个单独的css文件，不过通过合适的配置webpack也可以把css打包为单独的文件的。
+```
+ rules : [
+            {
+                test : /\.jsx?$/,
+                use : {
+                    loader : 'babel-loader',
+                    // options : {
+                    //     presets : ['env', 'react']
+                    // }
+                },
+                exclude : /node_modules/
+            },
+            {
+                test : /\.css$/,    // 只针对.css
+                use  : [
+                    {loader : "style-loader"}, {loader : "css-loader"}
+                ]
+            }
+        ]
+```
+
+## CSS module
+#   被称为CSS modules的技术意在把JS的模块化思想带入CSS中来，通过CSS模块，所有的类名，动画名默认都只作用于当前模块。Webpack对CSS模块化提供了非常好的支持，只需要在CSS loader中进行简单配置即可，然后就可以直接把CSS的类名传递到组件的代码中，这样做有效避免了全局污染。具体的代码如下：
+```
+module.exports = {
+    ...
+    module: {
+        rules: [
+            ...
+            {
+                test: /\.css$/,
+                use: [
+                    {loader: "style-loader"}, 
+                    {loader: 
+                        "css-loader",
+                        options: {
+                            modules: true, // 指定启用css modules
+                            localIdentName: '[name]__[local]--[hash:base64:5]' // 指定css的类名格式
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+};
+```
+
+*   我们在app文件夹下创建一个Greeter.css文件来进行一下测试
+```
+/* Greeter.css */
+.root {
+  background-color: #eee;
+  padding: 10px;
+  border: 3px solid #ccc;
+}
+```
+*   导入.root到Greeter.js中
+```
+import React, {Component} from 'react';
+import config from './config.json';
+import styles from './Greeter.css';//导入
+
+class Greeter extends Component{
+  render() {
+    return (
+      <div className={styles.root}> //使用cssModule添加类名的方法
+        {config.greetText}
+      </div>
+    );
+  }
+}
+
+export default Greeter
+```
+放心使用把，相同的类名也不会造成不同组件之间的污染。
+
+## CSS预处理器
+#   Sass 和 Less 之类的预处理器是对原生CSS的拓展，它们允许你使用类似于variables, nesting, mixins, inheritance等不存在于CSS中的特性来写CSS，CSS预处理器可以这些特殊类型的语句转化为
+#   浏览器可识别的CSS语句，你现在可能都已经熟悉了，在webpack里使用相关loaders进行配置就可以使用了，以下是常用的CSS 处理loaders:。
+*   Less Loader
+*   Sass Loader
+*   Stylus Loader
+
+#   不过其实也存在一个CSS的处理平台-PostCSS，它可以帮助你的CSS实现更多的功能，在其官方文档可了解更多相关知识。  
+
+#   除此 本文还引用 ccs-hot-loader
+```
+npm install --save-dev css-hot-loader
+```
+
+
+###     产品阶段的构建
+
+##  优化插件
+#   webpack提供了一些在发布阶段非常有用的优化插件，它们大多来自于webpack社区，可以通过npm安装，通过以下插件可以完成产品发布阶段所需的功能
+*   OccurenceOrderPlugin :为组件分配ID，通过这个插件webpack可以分析和优先考虑使用最多的模块，并为它们分配最小的ID
+*   UglifyJsPlugin：压缩JS代码；
+*   ExtractTextPlugin：分离CSS和JS文件
+*   OccurenceOrder 和 UglifyJS plugins 都是内置插件，你需要做的只是安装其它非内置插件
+```
+npm install --save-dev extract-text-webpack-plugin
+```
+
+#   目前为止，我们已经使用webpack构建了一个完整的开发环境。但是在产品阶段，可能还需要对打包的文件进行额外的处理，比如说优化，压缩，缓存以及分离CSS和JS。
+#   对于复杂的项目来说，需要复杂的配置，这时候分解配置文件为多个小的文件可以使得事情井井有条，以上面的例子来说，我们创建一个webpack.production.config.js的文件，在里面加上基本的配置,它和原始的webpack.config.js很像，如下：
+```
+
+```
+
+
+
+
+*   本篇多参考、整理与网上各路大神的心得资料以及本人学习过程中的一些经验、各方搬迁资料... 
+#   这里列出部分来源地址：
+*   https://www.jianshu.com/p/ac816f8610f8
+*   https://www.jianshu.com/p/42e11515c10f
+
+#   注1 ：package.json JSON文件不支持注释，package.json中的script会安装一定顺序寻找命令对应位置，本地的node_modules/.bin路径就在这个寻找清单中，所以无论是全局还是局部安装的Webpack，你都不需要写前面那指明详细的路径了。 如多是window电脑，build 需要配置未："build" : "set NODE_ENV=production && webpack --config ./webpack.production.config.js --progress"
+
+#   注2 ：npm一次性安装多个依赖模块，模块之间用空格隔开 例： npm install --save-dev babel-core babel-loader babel-preset-env babel-preset-react

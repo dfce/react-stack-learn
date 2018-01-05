@@ -29,10 +29,10 @@ module.exports = {
             favicon  : './app/static/images/favicon1.ico',
             inject   : 'body'
         }),
-        new webpack.BannerPlugin('版权所有，翻版必究'),   // 版权声明插件
-        new webpack.optimize.OccurrenceOrderPlugin({minimize: true}),   // 为组件分配ID，通过这个插件webpack可以分析和优先考虑使用最多的模块，并为它们分配最小的ID
-        new webpack.optimize.UglifyJsPlugin(),          // 压缩JS代码；
-        new ExtractTextPlugin("style.css")              // 分离CSS和JS文件
+        new webpack.BannerPlugin('版权所有，翻版必究'),                 // 版权声明插件
+        new webpack.optimize.OccurrenceOrderPlugin({minimize: true}), // 为组件分配ID，通过这个插件webpack可以分析和优先考虑使用最多的模块，并为它们分配最小的ID
+        new webpack.optimize.UglifyJsPlugin(),                        // 压缩JS代码；
+        new ExtractTextPlugin("css/[name].[hash:5].css")              // 分离CSS和JS文件
     ],
     resolve:{ //影响对模块的解析，一个对象
         extensions: [".js", ".json", ".jsx", ".css", ".scss"],//resolve.extensions并不是必须配置的，当不配置时，会使用默认值:["", ".webpack.js", ".web.js", ".js"]

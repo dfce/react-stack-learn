@@ -1,4 +1,4 @@
-##  【webpack 环境搭建】
+#  【webpack 环境搭建】
 
 ## 下载完整包直接执行：
 ```
@@ -91,7 +91,7 @@ module.exports = () => {
 ##   现在可以在控制台输入 webpack 来编译输出了，webpack 命令会自动生成一个build/bundle.js 文件，然后用浏览器打开 build/index.html 就可以看见 Hello World 了。
 ##   不过我们要使用 html-webpack-plugin 来生成这个 build/index.html 文件。
 
-#   使用html-webpack-plugin
+###   使用html-webpack-plugin
 *   删除原先的build/* 文件：
 ```
 rm -rf build/*
@@ -141,8 +141,8 @@ module.exports = {
 
 
 ##  【webpack 工作流】
-#   设置webpack-dev-server
-#   安装：
+###   设置webpack-dev-server
+###   安装：
 ```
 npm install webpack-dev-server --save-dev
 ```
@@ -158,7 +158,7 @@ npm install webpack-dev-server --save-dev
     ...
 }
 ```
-#   这时候，运行 npm run dev，会启动一个 Web 服务器，然后监听文件修改，然后自动重新合并你的代码。打开浏览器，访问 http://localhost:8080 会看到Hello World...。
+###   这时候，运行 npm run dev，会启动一个 Web 服务器，然后监听文件修改，然后自动重新合并你的代码。打开浏览器，访问 http://localhost:8080 会看到Hello World...。
 
 ##  模块热替换
 *   现在所有代码在作出修改后，就会由 webpack-dev-server 自动编译替换，不过浏览器还是要刷新才能看到替换效果。
@@ -200,18 +200,18 @@ module.exports = {
 ##   简介
 
 *   Babel 是一个通用的多用途 JavaScript 编译器。
-#    拆分成几个核心包，babel-core, babel-node, babel-cli...
-#    没有了默认的转换，现在你需要手动的添加 plugin。也就是插件化
-#    添加了 preset，也就是预置条件。
-#    增加了 .babelrc 文件，方便自定义的配置。
+###    拆分成几个核心包，babel-core, babel-node, babel-cli...
+###    没有了默认的转换，现在你需要手动的添加 plugin。也就是插件化
+###    添加了 preset，也就是预置条件。
+###    增加了 .babelrc 文件，方便自定义的配置。
 
-#   Babel 能做什么？
+###   Babel 能做什么？
 *   Babel 通过语法转换来支持最新版本的 JavaScript （ES6），而不用等待浏览器的支持。
 *   Babel 可以转换 React 的 JSX 语法和删除类型注释。
 *   Babel 是由插件构建的。因此，你可以根据自己的需要订制。
 *   支持 source map ，所以您可以轻松调试您编译的代码。
 
-#   Babel 不能做什么？
+###   Babel 不能做什么？
 *   Babel 只转换语法（如箭头函数），不支持新的全局变量。但是，您可以使用 babel-polyfill 来辅助支持。
 
 ##  包
@@ -223,7 +223,7 @@ module.exports = {
 *   babel-runtime
 *   babel-polyfill
 
-#   babel-core :babel 的核心包，包括核心 api，比如 transform，主要是处理转码的。 它会把我们的 js 代码，抽象成 ast，即 abstract syntax tree 的缩写，是源代码的抽象语法结构的树状表现形式。
+###   babel-core :babel 的核心包，包括核心 api，比如 transform，主要是处理转码的。 它会把我们的 js 代码，抽象成 ast，即 abstract syntax tree 的缩写，是源代码的抽象语法结构的树状表现形式。
 *   主要API:
 ```
 var babel = require('babel-core');
@@ -263,35 +263,35 @@ var result = babel.transformFileSync(
 *   但是如果多个文件都需要提供，会重复引用这些 helpers，会导致每一个模块都定义一份，代码冗余。所以 babel 提供了这个命令，用于生成一个包含了所有 helpers 的 js 文件，
 *   用于直接引用。然后再通过一个 plugin，去检测全局下是否存在这个模块，存在就不需要重新定义了。
  
-#   1:使用：执行 babel-external-helpers 生成 helpers.js 文件
+###   1:使用：执行 babel-external-helpers 生成 helpers.js 文件
 ```
 node_modules/.bin/babel-external-helpers > helpers.js
 ```
 
-#   2:安装: plugin
+###   2:安装: plugin
 ```
 npm install --save-dev babel-plugin-external-helpers
 ```
 
-#   3:配置 babel 
+###   3:配置 babel 
 ```
 {
     "plugins": ["external-helpers"]
 }
 ```
 
-#   4:入口文件引入 helpers
+###   4:入口文件引入 helpers
 ```
 require('./helpers.js');
 如果使用了 transform-runtime，就不需要生成 helpers.js 文件了，这个在后面的 babel-runtime 再说。
 ```
 
 ##   babel-node
-#   也是 babel-cli 下面的一个 command，主要是实现了 node 执行脚本和命令行写代码的能力。
+###   也是 babel-cli 下面的一个 command，主要是实现了 node 执行脚本和命令行写代码的能力。
 
 ##   babel-register
-#   通过改写 node 本身的 require，添加钩子，然后在 require 其他模块的时候，就会触发 babel 编译。也就是你引入 require('babel-register') 的文件代码，是不会被编译的。
-#   只有通过 require 引入的其他代码才会。
+###   通过改写 node 本身的 require，添加钩子，然后在 require 其他模块的时候，就会触发 babel 编译。也就是你引入 require('babel-register') 的文件代码，是不会被编译的。
+###   只有通过 require 引入的其他代码才会。
 ```
 npm install babel-register --save-dev
 ```
@@ -331,7 +331,7 @@ var obj = {};
   age: 30
 });
 ```
-#   babel-runtime 适合 JavaScript 库和工具包实现
+###   babel-runtime 适合 JavaScript 库和工具包实现
 *   避免 babel 编译的工具函数在每个模块里重复出现，减小库和工具包的体积；
 *   在没有使用 babel-runtime 之前，库和工具包一般不会直接引入 polyfill。否则像 Promise 这样的全局对象会污染全局命名空间，这就要求库的使用者自己提供 polyfill。
     这些 polyfill 一般在库和工具的使用说明中会提到，比如很多库都会有要求提供 es5 的 polyfill。在使用 babel-runtime 后，库和工具只要在 package.json 中增加依赖 babel-runtime，
@@ -349,7 +349,7 @@ var obj = {};
 *   （比如 Object.assign）都不会转译。如果想使用这些新的对象和方法，必须使用 babel-polyfill，为当前环境提供一个垫片。
 
 *   不同于 babel-runtime 的是，babel-polyfill 是一次性引入你的项目中的，就像是 React 包一样，同项目代码一起编译到生产环境。
-#   注意：babel
+###   注意：babel
 
 ##  transform-runtime 和  babel-polyfile
 *   babel-polyfill 是当前环境注入这些 es6+ 标准的垫片，好处是引用一次，不再担心兼容，而且它就是全局下的包，代码的任何地方都可以使用。缺点也很明显，它可能会污染原生的一些方法而把原生的方法重写。
@@ -362,7 +362,7 @@ var obj = {};
     每个模块都要做重复的工作（检测，替换），虽然 polyfill 只是引用，编译效率不够高效。
 
 ##  plugin
-#   babel-plugin-transform-runtime
+###   babel-plugin-transform-runtime
 *   transform-runtime 是为了方便使用 babel-runtime 的，它会分析我们的 ast 中，是否有引用 babel-rumtime 中的垫片（通过映射关系），如果有，就会在当前模块顶部插入我们需要的垫片。
     配置：
 ```
@@ -436,8 +436,8 @@ var obj = {};
 
 
 ##  WebPack 其他高级功能【比如下面的：loaders 和 plugins】  
-#   这些功能其实都可以通过命令行模式实现，但是正如前面提到的，这样不太方便且容易出错的，更好的办法是定义一个配置文件，这个配置文件其实也是一个简单的JavaScript模块，
-#   我们可以把所有的与打包相关的信息放在里面。
+###   这些功能其实都可以通过命令行模式实现，但是正如前面提到的，这样不太方便且容易出错的，更好的办法是定义一个配置文件，这个配置文件其实也是一个简单的JavaScript模块，
+###   我们可以把所有的与打包相关的信息放在里面。
 
 
 ##  WebPack 的一下强大功能
@@ -452,8 +452,8 @@ var obj = {};
 *                                   性能和安全的隐患。在开发阶段这是一个非常好的选项，在生产阶段则一定不要启用这个选项；
 *   cheap-module-eval-source-map	这是在打包文件时最快的生成source map的方法，生成的Source Map 会和打包后的JavaScript文件同行显示，没有列映射，和eval-source-map选项具有相似的缺点；
 
-#   *正如上所述：上述选项从上到下打包速度越来越快，不过同时也潜藏越多的负面作用，较快的打包速度的后果就是对打包后的文件的的执行有一定影响。对小到中型的项目中，eval-source-map是一个很好的选项，
-#    再次强调你只应该开发阶段使用它，我们继续对上文新建的webpack.config.js，进行如下配置:
+###   *正如上所述：上述选项从上到下打包速度越来越快，不过同时也潜藏越多的负面作用，较快的打包速度的后果就是对打包后的文件的的执行有一定影响。对小到中型的项目中，eval-source-map是一个很好的选项，
+###    再次强调你只应该开发阶段使用它，我们继续对上文新建的webpack.config.js，进行如下配置:
 ```
 module.exports = {
     devtool : 'eval-source-map',                    // 打包选项：source maps
@@ -467,8 +467,8 @@ module.exports = {
 *   cheap-module-eval-source-map方法构建速度更快，但是不利于调试，推荐在大型项目考虑时间成本时使用。
 
 ##  Loaders 
-#   Loaders是webpack提供的最激动人心的功能之一了。通过使用不同的loader，webpack有能力调用外部的脚本或工具，实现对不同格式的文件的处理，比如说分析转换scss为css，或者把下一代的JS文件（ES6，ES7)
-#   转换为现代浏览器兼容的JS文件，对React的开发而言，合适的Loaders可以把React的中用到的JSX文件转换为JS文件。
+###   Loaders是webpack提供的最激动人心的功能之一了。通过使用不同的loader，webpack有能力调用外部的脚本或工具，实现对不同格式的文件的处理，比如说分析转换scss为css，或者把下一代的JS文件（ES6，ES7)
+###   转换为现代浏览器兼容的JS文件，对React的开发而言，合适的Loaders可以把React的中用到的JSX文件转换为JS文件。
 
 #   Loaders需要单独安装并且需要在webpack.config.js中的modules关键字下进行配置，Loaders的配置包括以下几方面：
 *   test    :   用以匹配loaders所处理文件的扩展名的正则表达式【必须】
@@ -478,11 +478,11 @@ module.exports = {
 
 
 ##  一切皆模块
-#   Webpack有一个不可不说的优点，它把所有的文件都都当做模块处理，JavaScript代码，CSS和fonts以及图片等等通过合适的loader都可以被处理。
+###   Webpack有一个不可不说的优点，它把所有的文件都都当做模块处理，JavaScript代码，CSS和fonts以及图片等等通过合适的loader都可以被处理。
 
 ##  CSS
 
-#   webpack提供两个工具处理样式表，css-loader 和 style-loader，二者处理的任务不同，css-loader使你能够使用类似@import 和 url(...)的方法实现 require()的功能,style-loader将所有的计算后的样式加入页面中，二者组合在一起使你能够把样式表嵌入webpack打包后的JS文件中。
+###   webpack提供两个工具处理样式表，css-loader 和 style-loader，二者处理的任务不同，css-loader使你能够使用类似@import 和 url(...)的方法实现 require()的功能,style-loader将所有的计算后的样式加入页面中，二者组合在一起使你能够把样式表嵌入webpack打包后的JS文件中。
 *   安装
 ```
 npm install --save-dev style-loader css-loader
@@ -510,7 +510,7 @@ npm install --save-dev style-loader css-loader
 ```
 
 ## CSS module
-#   被称为CSS modules的技术意在把JS的模块化思想带入CSS中来，通过CSS模块，所有的类名，动画名默认都只作用于当前模块。Webpack对CSS模块化提供了非常好的支持，只需要在CSS loader中进行简单配置即可，然后就可以直接把CSS的类名传递到组件的代码中，这样做有效避免了全局污染。具体的代码如下：
+###   被称为CSS modules的技术意在把JS的模块化思想带入CSS中来，通过CSS模块，所有的类名，动画名默认都只作用于当前模块。Webpack对CSS模块化提供了非常好的支持，只需要在CSS loader中进行简单配置即可，然后就可以直接把CSS的类名传递到组件的代码中，这样做有效避免了全局污染。具体的代码如下：
 ```
 module.exports = {
     ...
@@ -565,8 +565,8 @@ export default Greeter
 放心使用把，相同的类名也不会造成不同组件之间的污染。
 
 ## CSS预处理器
-#   Sass 和 Less 之类的预处理器是对原生CSS的拓展，它们允许你使用类似于variables, nesting, mixins, inheritance等不存在于CSS中的特性来写CSS，CSS预处理器可以这些特殊类型的语句转化为
-#   浏览器可识别的CSS语句，你现在可能都已经熟悉了，在webpack里使用相关loaders进行配置就可以使用了，以下是常用的CSS 处理loaders:。
+###   Sass 和 Less 之类的预处理器是对原生CSS的拓展，它们允许你使用类似于variables, nesting, mixins, inheritance等不存在于CSS中的特性来写CSS，CSS预处理器可以这些特殊类型的语句转化为
+###   浏览器可识别的CSS语句，你现在可能都已经熟悉了，在webpack里使用相关loaders进行配置就可以使用了，以下是常用的CSS 处理loaders:。
 *   Less Loader
 *   Sass Loader
 *   Stylus Loader
@@ -582,7 +582,7 @@ npm install --save-dev css-hot-loader
 ###     产品阶段的构建
 
 ##  优化插件
-#   webpack提供了一些在发布阶段非常有用的优化插件，它们大多来自于webpack社区，可以通过npm安装，通过以下插件可以完成产品发布阶段所需的功能
+###   webpack提供了一些在发布阶段非常有用的优化插件，它们大多来自于webpack社区，可以通过npm安装，通过以下插件可以完成产品发布阶段所需的功能
 *   OccurenceOrderPlugin :为组件分配ID，通过这个插件webpack可以分析和优先考虑使用最多的模块，并为它们分配最小的ID
 *   UglifyJsPlugin：压缩JS代码；
 *   ExtractTextPlugin：分离CSS和JS文件
@@ -591,8 +591,8 @@ npm install --save-dev css-hot-loader
 npm install --save-dev extract-text-webpack-plugin
 ```
 
-#   目前为止，我们已经使用webpack构建了一个完整的开发环境。但是在产品阶段，可能还需要对打包的文件进行额外的处理，比如说优化，压缩，缓存以及分离CSS和JS。
-#   对于复杂的项目来说，需要复杂的配置，这时候分解配置文件为多个小的文件可以使得事情井井有条，以上面的例子来说，我们创建一个webpack.production.config.js的文件，在里面加上基本的配置,它和原始的webpack.config.js很像，如下：
+###   目前为止，我们已经使用webpack构建了一个完整的开发环境。但是在产品阶段，可能还需要对打包的文件进行额外的处理，比如说优化，压缩，缓存以及分离CSS和JS。
+###   对于复杂的项目来说，需要复杂的配置，这时候分解配置文件为多个小的文件可以使得事情井井有条，以上面的例子来说，我们创建一个webpack.production.config.js的文件，在里面加上基本的配置,它和原始的webpack.config.js很像，如下：
 ```
 
 ```
@@ -601,10 +601,10 @@ npm install --save-dev extract-text-webpack-plugin
 
 
 *   本篇多参考、整理与网上各路大神的心得资料以及本人学习过程中的一些经验、各方搬迁资料... 
-#   这里列出部分来源地址：
+###   这里列出部分来源地址：
 *   https://www.jianshu.com/p/ac816f8610f8
 *   https://www.jianshu.com/p/42e11515c10f
 
-#   注1 ：package.json JSON文件不支持注释，package.json中的script会安装一定顺序寻找命令对应位置，本地的node_modules/.bin路径就在这个寻找清单中，所以无论是全局还是局部安装的Webpack，你都不需要写前面那指明详细的路径了。 如多是window电脑，build 需要配置未："build" : "set NODE_ENV=production && webpack --config ./webpack.production.config.js --progress"
+###   注1 ：package.json JSON文件不支持注释，package.json中的script会安装一定顺序寻找命令对应位置，本地的node_modules/.bin路径就在这个寻找清单中，所以无论是全局还是局部安装的Webpack，你都不需要写前面那指明详细的路径了。 如多是window电脑，build 需要配置未："build" : "set NODE_ENV=production && webpack --config ./webpack.production.config.js --progress"
 
-#   注2 ：npm一次性安装多个依赖模块，模块之间用空格隔开 例： npm install --save-dev babel-core babel-loader babel-preset-env babel-preset-react
+###   注2 ：npm一次性安装多个依赖模块，模块之间用空格隔开 例： npm install --save-dev babel-core babel-loader babel-preset-env babel-preset-react

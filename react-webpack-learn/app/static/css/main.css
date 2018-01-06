@@ -11,7 +11,11 @@ html {
 
 body {
   margin: 0;
-  border:1px solid red;
+  border:1px solid #eef;
+  width:50%;
+  height:350px;
+  position:relative;
+  margin:0 auto;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 

@@ -8,8 +8,19 @@
     "build": "webpack --progress --colors --config webpack.config.js",
     "dev": "webpack-dev-server --devtool eval --progress --colors --hot --content-base build"
   },
-  "keywords": [],
-  "author": "",
+  "repository": {
+  "type": "git",
+  "url": "https://github.com/dfce/react-stack-learn/tree/master/react-webpack-learn"
+  },
+  "keywords": [
+    "reactjs",
+    "redux",
+    "react-router",
+    "webpack",
+    "babel",
+    "loader"
+  ],
+  "author": "dfce",
   "license": "ISC",
   "devDependencies": {
     "babel-core": "^6.26.0",

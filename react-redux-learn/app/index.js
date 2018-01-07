@@ -1,21 +1,21 @@
+/**
+ * @desc react的代码
+ */
+// import React from 'react';
+// import ReactDOM, {render} from 'react-dom'; 
+// import IndexComponnet from './components/Home/Index';
+
+// ReactDOM.render(
+//     <IndexComponnet/>,
+//     document.getElementById('app')
+// );
+
+
+/**
+ * @desc React-Router
+ */
 import React from 'react';
-import ReactDOM from 'react-dom';
-// import {BrowserRouter as Router, Switch, Route, Redirect} from 'react-router';
-import { Router, Route,IndexRoute, hashHistory } from 'react-router';
-import App from './components/Home/Index';
-import Home from './components/Home/Index';
-import Accounts from './components/Home/Accounts';
-import Statements from './components/Home/Statements';
+import ReactDOM, {render} from 'react-dom'; 
+import Routes from './routes/index'
 
-const AppRoot = <Router>
-                    <Route path="/" component={App}>
-                        <IndexRoute component={Home}/>
-                        <Route path="accounts" component={Accounts}/>
-                        <Route path="statements" component={Statements}/>
-                    </Route>
-               </Router>
-
-ReactDOM.render(
-    AppRoot,
-    document.getElementById('app')
-);
+render(<Routes/>, document.getElementById('app'))

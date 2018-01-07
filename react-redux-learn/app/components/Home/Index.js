@@ -1,24 +1,37 @@
-import React, {Component} from 'react';
-import ReactDom from 'react-dom';
+/**
+ * @desc test 1 函数式组建
+ */
+// import React from 'react'
+// const IndexComponent = () => (
+//   <div>
+//     <h2>这是我的第一个函数组件</h2>
+//   </div>
+  
+// )
 
-class Index extends Component {
+/**
+ * @desc test 2 Class 组建
+ */
+import React, {Component} from 'react';
+class IndexComponent extends Component {
     constructor(props) {
         super(props);
-        this.state = {loaded: false};
-    }
-    componentDidMount() {
-        this.props = {
-            action : 'Index', 
-            naem   : "this Name's index.component"
+        this.state = {
+            title  : 'React Stack',
+            name   : '这是我的第一Class写的react-router组件',
+            loaded: false
         }
-    }    
-
-    render() {
+    }
+    // ComponentWillMount
+    render(){
+        console.log(this.props)
         return (
-            <div className="contriner">
-                {this.props.childredn}
-            </div>        
+          <div>
+              {this.state.title}
+              <span>{this.state.name}</span>
+          </div>
         )
     }
 }
-export default Index;
+
+export default IndexComponent

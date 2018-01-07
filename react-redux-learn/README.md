@@ -2,12 +2,14 @@ Redux + React-redux + React-Native
 ========================================================================================================================================
 #  【Redux + React-redux React-Native】 learn
 
+### http://react-guide.github.io/react-router-cn/index.html 【官方中文文档地址】
+
 #   React Router
 ## 安装：
 ####    React Router被拆分成三个包：react-router,react-router-dom和react-router-native。react-router提供核心的路由组件与函数。其余两个则提供运行环境（即浏览器与react-native）所需的特定组件。进行网站（将会运行在浏览器环境中）构建，我们应当安装react-router-dom。react-router-dom暴露出react-router中暴露的对象与方法，因此你只需要安装并引用react-router-dom即可。
 
 ```
-npm install --save react-router-dom
+npm install --save-dev react-router-dom
 ```
 
 ##  路由器（Router）
@@ -16,10 +18,6 @@ npm install --save react-router-dom
 
 ##  历史（History）
 ### 每个路由器都会创建一个history对象并用其保持追踪当前location[注1]并且在有变化时对网站进行重新渲染。这个history对象保证了React Router提供的其他组件的可用性，所以其他组件必须在router内部渲染。一个React Router组件如果向父级上追溯却找不到router组件，那么这个组件将无法正常工作。
-*   注：[1]
-*   locations 是一个含有描述URL不同部分属性的对象：
-*   // 一个基本的location对象
-*   { pathname: '/', search: '', hash: '', key: 'abc123' state: {} }
 
 
 ## 渲染<Router>
@@ -51,9 +49,6 @@ const App = () => {
 
 ##  路径（Path）
 ### <Route>接受一个数为string类型的path，该值路由匹配的路径名的类型。例如：<Route path='/roster'/>会匹配以/roster[注2]开头的路径名。在当前path参数与当前location的路径相匹配时，路由就会开始渲染React元素。若不匹配，路由不会进行任何操作[注3]。
-*   注：
-*   [2] 你可以渲染无路径的<Route>，其将会匹配所有location。此法用于访问存在上下文中的变量与方法。
-*   [3] 如果你使用children参数，即便在当前location不匹配时route也将进行渲染。
 ```
 <Route path='/roster'/>
 // 当路径名为'/'时, path不匹配
@@ -65,17 +60,108 @@ const App = () => {
 *   #注意：在匹配路由时，React Router只关注location的路径名。当URL如下时：
 *   http://www.example.com/my-projects/one?extra=false  React Router去匹配的只是'/my-projects/one'这一部分。
 
-##  匹配路径
+##  <Route>是如何渲染的？
+当一个路由的path匹配成功后，路由用来确定渲染的参数有三种。只需要提供其中一种即可。
+*   component : 一个React组建。当带有component参数的route匹配成功后，touted会返回一个新的元素其为component参数所对应的React组件
+    （使用React.createElement创建）。
+*   render : 一个返回React element的函数[注5].当匹配成功后调用该函数。过程与传入component参数类似，并且对于行级渲染与需要向元素传入额外参数的操作
+    会更有用。
+*   children : 一个返回React element的函数。与上述两个参数不同，无论route是否匹配当前location，其都会被渲染。
+    ```
+    <Route path='/page' component={Page} />
+    const extraProps = { color: 'red' }
+    <Route path='/page' render={(props) => (
+    <Page {...props} data={extraProps}/>
+    )}/>
+    <Route path='/page' children={(props) => (
+    props.match
+        ? <Page {...props}/>
+        : <EmptyPage {...props}/>
+    )}/>
+    ```
+    通常component参数与render参数被更经常地使用。children参数偶尔会被使用，它更常用在path无法匹配时呈现的'空'状态。在本例中并不会有额外的状态，所以我们将使用<Route>的component参数。
+
+    通过<Route>渲染的元素会被传入一些参数。分别是match对象，当前location对象[注6]以及history对象（由router创建）[注7]。 
+
+## <Routes>
+### 现在我们清楚了根路由的结构，我们需要实际渲染我们的路由。对于这个应用，我们将会在<Main>组件中渲染<Switch>与<Route>，这一过程会将route匹配生成的HTML放在<main>节点中。      
+```
+...
+class Routes extends Component {
+        render(){return(
+            <Router>
+                <div>
+                    <Switch>
+                        <Route  exact path="/" component={App}></Route>
+                        <Route path="/WebPack" component={Nav1} ></Route>
+                        <Route path="/React-Router、Redux" component={Nav2}></Route>
+                    </Switch>
+                </div>
+            </Router>
+        )}
+}
+...
+```
+*   #注意：主页路由包含额外参数。该参数用来保证路由能准确匹配path。
+### 嵌套路由
+React-Router路由/React-Router、Redux/:type并未包含再上述<Switch>中。它有组件负责在路径包含‘/React-Router、Redux’的情形下进行渲染。
+在Router组件中，我们将为两种路径进行渲染：
+*   /React-Router、Redux ：对应路劲名仅仅是/React-Router、Redux时，因此需要在元素上添加exact参数。
+*   /React-Router、Redux/:type ：该路由使用一个路由参数来获取/React-Router、Redux后的路径名。
+```
+<Switch>
+    <Route  exact path="/" component={App}></Route>
+    <Route path="/WebPack" component={Nav1} ></Route>
+    <Route path="/React-Router、Redux" component={Nav2}></Route>
+    <Route path="/React-Router、Redux/:type" component={React-Router}></Route>
+</Switch>
+```
+*   组合在相同组件中分享共同前缀的路由是一种有用的方法。这就需要简化父路由并且提供一个区域来渲染具有相同前缀的通用路由。
+    例如，<Roster>用来渲染所有以/roster开始的全部路由。
+    ```
+    const Roster = () => (
+    <div>
+        <h2>This is a roster page!</h2>
+        <Switch>
+            <Route exact path='/roster' component={FullRoster}/>
+            <Route path='/roster/:number' component={Player}/>
+        </Switch>
+    </div>
+    )
+    ```
+##  路径参数
+有时路径名中存在我们需要获取的参数。我们可以向route的路径字符串中添加path参数
+
+如'/roster/:number'中:number这种写法意味着/roster/后的路径名将会被获取并存在match.params.number中。例如，路径名'/roster/6'会获取到一个对象：
+```
+{number : '6'} // 注获取的值是字符串类型的
+```    
+
+##  Link
+现在，我们应用需要在各个页面切换。如果使用锚点元素实现，在每次点击是页面将被重新加载。React Router 提供了<Link>组件用来避免这种状况的发生。当你点击<Link>时，URL会更新，组件被重新渲染，但是页面不会重新加载。
 
 
 
 
 
-
-
-
-
-
+*   注：
+*   [1] locations 是一个含有描述URL不同部分属性的对象：
+        // 一个基本的location对象
+        { pathname: '/', search: '', hash: '', key: 'abc123' state: {} }
+*   [2] 你可以渲染无路径的<Route>，其将会匹配所有location。此法用于访问存在上下文中的变量与方法。
+*   [3] 如果你使用children参数，即便在当前location不匹配时route也将进行渲染。
+*   [4] 当需要支持相对路径的<Route>与<Link>时，你需要多做一些工作。相对<Link>将会比你之前看到的更为复杂。因其使用了父级的match对象而非当前URL来匹
+        配相对路径。
+*   [5] 这是一个本质上无状态的函数组件。内部实现，component参数与render参数的组件是用很大的区别的。使用component参数的组件会使用        
+        React.createElement来创建元素，使用render参数的组件则会调用render函数。如果我们定义一个内联函数并将其传给component参数，这将会比使用render参数慢很多。       
+        ```
+        <Route path='/one' component={One}/>
+        // React.createElement(props.component)
+        <Route path='/two' render={() => <Two />}/>
+        // props.render()
+        ``` 
+*   [6] <Route>与<Switch>组件都会带有location参数。这能让你使用与实际location不同的location去匹配地址。
+*   [7] 可以传入staticContext参数，不过这仅在服务端渲染时有用。        
 
 
 `分割线`

@@ -1,0 +1,6 @@
+
+
+export const COMMON_SHOWMSG = 'COMMON_SHOWMSG';
+
+export const ADMIN_DOLOGIN = 'ADMIN_DOLOGIN';
+export const ADMIN_ROOM_DATALIST = 'ADMIN_ROOM_DATALIST';
